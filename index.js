@@ -1,24 +1,20 @@
 'use strict';
 
-// определяю все нужные элементы на странице
-const refs = {
-    daysValueField: document.querySelector('[data-value=days]'),
-    hoursValueField: document.querySelector('[data-value=hours]'),
-    minsValueField: document.querySelector('[data-value=mins]'),
-    secsValueField: document.querySelector('[data-value=secs]'),
-};
-
-
 class CountdownTimer {
-    constructor({ selector, targetDate, onTick }) {
+    constructor({ selector, targetDate}) {
         this.intervalId = null;
         this.isActive = false;
         this.selector = selector;
         this.targetDate = targetDate;
-        this.onTick = onTick;
+        this.onTick = this.updateTimeFields;
+        this.daysValueField = document.querySelector(`${this.selector} [data-value=days]`);
+        this.hoursValueField = document.querySelector(`${this.selector} [data-value=hours]`);
+        this.minsValueField = document.querySelector(`${this.selector} [data-value=mins]`);
+        this.secsValueField = document.querySelector(`${this.selector} [data-value=secs]`);
 
         this.init();
     }
+
 
     // инициализирую оставшееся время
     init() {
@@ -65,17 +61,17 @@ class CountdownTimer {
         }, 1000);
 
     }
+
+    // функция, которая будет передаваться в setInterval и обновлять данные в html
+    updateTimeFields({ days, hours, mins, secs }) {
+        this.daysValueField.textContent = days;
+        this.hoursValueField.textContent = hours;
+        this.minsValueField.textContent = mins;
+        this.secsValueField.textContent = secs;
+    }
 }
 
 
 // создаю экземпляр класса, указываю его id в разметке, нужную дату и функцию для выбора нужных элементов в разметке
-const timer = new CountdownTimer({selector: '#timer-1', targetDate: new Date('Jan 1, 2021'), onTick: updateTimeFields });
+const timer = new CountdownTimer({selector: '#timer-1', targetDate: new Date('Jan 1, 2021')});
 timer.startTimer.call(timer);
-
-// функция, которая будет передаваться в setInterval и обновлять данные в html
-function updateTimeFields({ days, hours, mins, secs }) {
-    refs.daysValueField.textContent = days;
-    refs.hoursValueField.textContent = hours;
-    refs.minsValueField.textContent = mins;
-    refs.secsValueField.textContent = secs;
-}
